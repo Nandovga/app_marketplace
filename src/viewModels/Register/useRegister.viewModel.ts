@@ -11,11 +11,11 @@ export const useRegisterViewModel = () => {
     const { control, handleSubmit, formState: { errors }} = useForm<RegisterFormData>({
         resolver: yupResolver(registerScheme),
         defaultValues: {
-            name: "Luiz Fernando",
-            email: "nandovga123@gmail.com",
-            phone: "11111111111",
-            password: "123123123",
-            confirmPassword: "123123123"
+            name: "",
+            email: "",
+            phone: "",
+            password: "",
+            confirmPassword: ""
         }
     });
     const onSubmit = handleSubmit(async (userData) => {
@@ -29,5 +29,5 @@ export const useRegisterViewModel = () => {
         })
     });
 
-    return {control, onSubmit, errors}
+    return { control, onSubmit, errors }
 };
