@@ -1,0 +1,27 @@
+import { createElement } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { useModalStore } from "../store/modal-store";
+import { SelectionModal, SelectionModalProps } from "../components/Modals/SelectionModal";
+
+export type SelectionVariant = "primary" | "secondary" | "danger"
+
+export interface SelectionOption {
+    text: string;
+    onPress: () => void;
+    icon?: keyof typeof Ionicons.glyphMap
+    variant?: SelectionVariant
+}
+
+export const useAppModal = () => {
+    const { open, close } = useModalStore();
+
+    const showSelection = ({ options, message, title }: {
+        title: string;
+        message?: string;
+        options: SelectionOption[];
+    }) => {
+        open(createElement(SelectionModal, { options, title, message } as SelectionModalProps));
+    }
+
+    return { showSelection, close };
+};

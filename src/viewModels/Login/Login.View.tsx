@@ -37,7 +37,7 @@ export const LoginView: FC<ReturnType<typeof useLoginViewModel>> = ({
                     <Text className="text-base mb-4 text-gray-300">Ainda não tem uma conta?</Text>
                     <AppButton rightIcon="arrow-forward"
                                variant="outlined"
-                               onPress={() => router.push("/register")}>Registro</AppButton>
+                               onPress={() => router.push("/register")}>Cadastrar</AppButton>
                 </View>
             </View>
         </KeyboardContainer>

@@ -1,12 +1,25 @@
-import {useForm} from "react-hook-form";
+import { useState} from "react";
+import { useForm } from "react-hook-form";
+import { CameraType } from "expo-image-picker";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useImage } from "../../shared/hooks/useImage";
 import { useUserStore } from "../../shared/store/user-store";
 import { RegisterFormData, registerScheme } from "./register.scheme";
 import { userRegisterMutation } from "../../shared/queries/auth/user-resgister.mutation";
+import { userUploadAvatarMutation } from "../../shared/queries/auth/user-upload-avatar.mutation";
 
 export const useRegisterViewModel = () => {
-    const useRegisterMutation = userRegisterMutation();
-    const { setSession, user } = useUserStore()
+    const { setSession, updateUser } = useUserStore();
+    const [avatarUri, setAvatarUri] = useState<string | null>(null)
+
+    const { handleSelectImage } = useImage({
+        callback: setAvatarUri,
+        cameraType: CameraType.front
+    })
+
+    const handleSelectAvatar = async () => {
+        await handleSelectImage();
+    }
 
     const { control, handleSubmit, formState: { errors }} = useForm<RegisterFormData>({
         resolver: yupResolver(registerScheme),
@@ -18,16 +31,21 @@ export const useRegisterViewModel = () => {
             confirmPassword: ""
         }
     });
+
+    const useAvatarUploadMutation = userUploadAvatarMutation();
+    const useRegisterMutation = userRegisterMutation({
+        onSuccess: async () => {
+            if (avatarUri) {
+                const { url } = await useAvatarUploadMutation.mutateAsync(avatarUri)
+                console.log(url);
+                updateUser({ avatarUrl: url })
+            }
+        }
+    });
     const onSubmit = handleSubmit(async (userData) => {
         const { confirmPassword, ...registerData } = userData;
-        const mutationResponse = await useRegisterMutation.mutateAsync(registerData);
-
-        setSession({
-            user: mutationResponse.user,
-            token: mutationResponse.token,
-            refreshToken: mutationResponse.refreshToken
-        })
+        await useRegisterMutation.mutateAsync(registerData);
     });
 
-    return { control, onSubmit, errors }
+    return { control, onSubmit, errors, handleSelectAvatar, avatarUri }
 };
