@@ -1,9 +1,9 @@
 import { Text, View } from "react-native";
 
-export default function Home() {
+export default function Orders() {
     return (
         <View className="flex-1 items-center justify-center">
-            <Text>Tela de Home</Text>
+            <Text>Tela de Ordem</Text>
         </View>
     )
 }

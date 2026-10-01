@@ -22,7 +22,7 @@ export const uploadAvatar = async (avatarUri: string)=> {
         name: "avatar.jpeg"
     } as unknown as Blob)
 
-    const { data } = await marketPlaceApiClient.post<UploadAvatarResponse>("/user/avatar");
+    const { data } = await marketPlaceApiClient.post<UploadAvatarResponse>("/user/avatar", formData, { headers: { "Content-Type": "multipart/form-data" }})
 
     data.url = `${baseURL}${data.url}`;
     return data;
